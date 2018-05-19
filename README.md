@@ -21,13 +21,13 @@
 
 This package presents a novel perspective to understand the spatial and statistical patterns of a cone penetration dataset and an automatic approach to identify soil stratification. Both local consistency in physical space (i.e., along depth) and statistical similarity in feature space (i.e., logQt – logFr space or the Robertson chart) between data points are considered simultaneously. The proposed approach is, in essence, consist of two parts: 1) a pattern detection approach using Bayesian inferential framework, and 2) a pattern interpretation protocol using Robertson chart. The first part is the mathematical core of the proposed approach, which infers both spatial pattern in physical space and statistical pattern in feature space from the input dataset; the second part converts the abstract patterns into intuitive spatial configurations of multiple soil layers having different soil behavior types. The advantages of this approach include probabilistic soil classification, and identifying soil stratification in an automatic and fully unsupervised manner. This approach has been tested using various datasets including both synthetic and real-world CPT soundings.
 
-The package is based on the algorithm developed by [Wang et al., 2017](https://link.springer.com/article/10.1007/s11004-016-9663-9) and combines Hidden Markov Random Fields with Gaussian Mixture Models in a Bayesian inference framework.
+The package is based on the algorithm developed by [Wang et al., 2017](https://link.springer.com/article/10.1007/s11004-016-9663-9) and combines Markov Random Fields with Gaussian Mixture Models in a Bayesian inference framework.
 
 ## Examples
 
 ### NGES CPT log interpretaion
 
-You can try out this method by using an interactive Jupyter Notebook in your own web browser, enabled by Binder:
+You can try out this example by using an interactive Jupyter Notebook in your own web browser, enabled by Binder, simply please click the link below:
 
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/hwang051785/pyCPT/master?filepath=jupyter_notebooks%2FpyCPT_test.ipynb)
 
