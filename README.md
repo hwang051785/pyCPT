@@ -9,7 +9,7 @@
 
 + [Introduction](#introduction)
 + [Examples](#examples)
-  - [NGES CPT log interpretaion] (#nges-cpt-log-interpretaion)  
+  - [NGES CPT log interpretaion](#nges-cpt-log-interpretaion)  
 + [Installation](#installation)
   - [Dependencies](#dependencies)
   - [Cloning directly from GitHub](#cloning-directly-from-github)
