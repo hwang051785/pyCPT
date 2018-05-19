@@ -2,7 +2,7 @@
 
 Approach based on Wang et al. 2016 paper
 
-@author: Alexander Schaaf, Hui Wang
+@author: Alexander Schaaf, Hui Wang, Tianqi Zhang
 """
 import sys
 
