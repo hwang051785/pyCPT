@@ -1,0 +1,11 @@
+scipy
+
+numpy
+
+pandas
+
+matplotlib
+
+tqdm
+
+scikit_learn
