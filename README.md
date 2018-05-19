@@ -9,7 +9,7 @@
 
 + [Introduction](#introduction)
 + [Examples](#examples)
-  - [1D: Segmentation of geophysical well log data](#NGES example)  
+  - [NGES CPT log interpretaion] (#NGES-CPT-log-interpretaion)  
 + [Installation](#installation)
   - [Dependencies](#dependencies)
   - [Cloning directly from GitHub](#cloning-directly-from-github)
