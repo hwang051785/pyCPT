@@ -18,8 +18,6 @@ print('n_feat:  ' + str(self.n_feat))
 
 self.fit(n=100, n_labels=3, beta_jump_length=0.1)
 
-# post_process.plot_image(self.phyDim, self.phys_shp, self.coords, self.feat[:, 0], scatter=False)
-
 # *********************************************************************************************************************
 """  TEST 2-DIMENSIONAL DATA  """
 # test 2D data with 2 features;  2d_data[Y,X,F]  (Y,X) = (5,5)
