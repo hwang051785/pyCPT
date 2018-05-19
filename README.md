@@ -9,7 +9,7 @@
 
 + [Introduction](#introduction)
 + [Examples](#examples)
-  - [NGES CPT log interpretaion] (#NGES-CPT-log-interpretaion)  
+  - [NGES CPT log interpretaion] (#nges-cpt-log-interpretaion)  
 + [Installation](#installation)
   - [Dependencies](#dependencies)
   - [Cloning directly from GitHub](#cloning-directly-from-github)
@@ -24,6 +24,8 @@ This package presents a novel perspective to understand the spatial and statisti
 The package is based on the algorithm developed by [Wang et al., 2017](https://link.springer.com/article/10.1007/s11004-016-9663-9) and combines Hidden Markov Random Fields with Gaussian Mixture Models in a Bayesian inference framework.
 
 ## Examples
+
+### NGES CPT log interpretaion
 
 You can try out this method by using an interactive Jupyter Notebook in your own web browser, enabled by Binder:
 
