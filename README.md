@@ -58,9 +58,9 @@ then append the path to the repository:
     sys.path.append("path/to/cloned/repository")
     
 to import the module:
-
-    import pre_process
+    
     import pyCPT
+    import post_process
     
 ## Getting Started
 
