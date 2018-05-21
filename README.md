@@ -64,21 +64,21 @@ to import the module:
     
 ## Getting Started
 
-Construct data structure
+Construct data structure and perform model selection for the optimal number of clusters
 
-    cpt = pyCPT.read_cpt_data('path/to/dataset')
-    
-Model selection for the optimal number of clusters
-    
-    mod_sel = pre_process.model_selection(cpt.feat, 10, plot=True)
+    cpt = pyCPT.CPT('path/to/dataset')
     
 Extract soil segments
     
-    pyCPT.segmentation(cpt, n=200, n_labels=mod_sel[1], start_iter=100)
+    cpt.segmentation(num_of_iter=200, start_iter=100)
     
 Soil interpretation
     
-    layer_info = pyCPT.detect_layers(cpt)
+    cpt.detect_layers()
+    
+Plot the soil layers
+    
+    pyCPT.plot_layers(cpt)
     
 ## References
 
