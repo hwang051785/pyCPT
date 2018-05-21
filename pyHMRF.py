@@ -13,7 +13,7 @@ References
 ************************************************************************************************
 @authors: Tianqi Zhang, Hui Wang, Alexander Schaaf
 ************************************************************************************************
-pyMRF is licensed under the GNU Lesser General Public License v3.0
+pyHMRF is licensed under the GNU Lesser General Public License v3.0
 ************************************************************************************************
 """
 
