@@ -28,7 +28,7 @@ def plot_statistical_pattern(element, res=50, xlabel='Feature_1', ylabel='Featur
         mu_temp = element.mu_est[i, :]
         cov_temp = element.cov_est[i, :, :]
         Z = multivariate_normal(mu_temp, cov_temp).pdf(pos)
-        plt.contour(X, Y, Z, levels=5, cmap=cmap_contour, linewidths=lw)
+        plt.contour(X, Y, Z, cmap=cmap_contour, linewidths=lw)
 
     plt.scatter(element.feat[:, 0], element.feat[:, 1], s=5, c=element.label_map_est, cmap=cmap_scatter)
     plt.title('Gaussian mixture plot')
