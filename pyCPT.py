@@ -172,7 +172,7 @@ def soil_label(x):
 
 
 def mixture_plot_robertson_chart(cpt, res=50, figsize=(8, 4.8),
-                                 cmap_contour='viridis', cmap_scatter='Pastel2',
+                                 cmap_contour='viridis', cmap_scatter='Pastel2', nlevels=3,
                                  lw=1, equal_axis=False, aspect=0.8):
     """
     purpose: re-construct the SBT zones based on Robertson (1990)
@@ -199,7 +199,7 @@ def mixture_plot_robertson_chart(cpt, res=50, figsize=(8, 4.8),
         mu_temp = cpt.element.mu_est[i, :]
         cov_temp = cpt.element.cov_est[i, :, :]
         Z = multivariate_normal(mu_temp, cov_temp).pdf(pos)
-        plt.contour(X, Y, Z, cmap=cmap_contour, linewidths=lw)
+        plt.contour(X, Y, Z, nlevels, cmap=cmap_contour, linewidths=lw)
 
     plt.scatter(cpt.element.feat[:, 0], cpt.element.feat[:, 1], s=5, c=cpt.element.label_map_est, cmap=cmap_scatter)
 
