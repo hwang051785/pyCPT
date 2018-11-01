@@ -59,7 +59,7 @@ class Element:
 
         # store initial data
         self.data = data
-        # get shape of physical space
+        # get number of rows and columns of the database
         self.shape = np.shape(data)
         # store physical dimension
         self.phyDim = np.shape(np.asmatrix(coord))[0]
@@ -89,37 +89,39 @@ class Element:
         # fetch dimensionality, coordinate and feature vector from input data
         # feature matrix/vector has the shape: num_pixel by n_feat
 
-        # 1D
+        # 1D scenario
         if self.phyDim == 1:
-            # create coordinate vector
+            # calculate the coordinate increment
+            # y_0 = coord[0]; y_n = coord[1]
             delta_coord = (coord[1] - coord[0])/(self.shape[0] - 1)
+            # create coordinate vector
             self.coords = np.array([np.arange(coord[0], coord[1]+delta_coord, delta_coord)]).T  # an n-by-one matrix
-            # feature vector
+            # create feature vector
             self.feat = self.data
 
-        # 2D
+        # 2D scenario
         elif self.phyDim == 2:
-            # create coordinate vector
+            # calculate the coordinate increment
             # x_0 = coord[1, 0];    x_n = coord[1, 1];
             # y_0 = coord[0, 0];    y_n = coord[0, 1];
             delta_coord_y = (coord[0, 1] - coord[0, 0]) / (self.shape[0] - 1)
             delta_coord_x = (coord[1, 1] - coord[1, 0]) / (self.shape[1] - 1)
+            # create coordinate vector
             y, x = np.indices(self.shape[0:2])
             self.coords = np.array([y.flatten(), x.flatten()]).T
             self.coords[:, 0] = (self.coords[:, 0].max() - self.coords[:, 0]) * delta_coord_y + coord[0, 0]
             self.coords[:, 1] = self.coords[:, 1] * delta_coord_x + coord[1, 0]
-
             # create feature matrix
             if len(self.shape) == 2:
                 self.feat = np.array([self.data.ravel()]).T
             else:
                 self.feat = np.array([self.data[:, :, f].ravel() for f in range(self.n_feat)]).T
 
-        # 3D
+        # 3D scenario
         elif self.phyDim == 3:
             raise Exception("3D segmentation not yet supported.")
 
-        # mismatch
+        # physical dimension mismatch
         else:
             raise Exception("Data format appears to be wrong (neither 1-, 2- or 3-D).")
 
@@ -166,12 +168,12 @@ class Element:
                                                                   np.nanmin(self.feat, axis=0))
 
     def calc_gibbs_energy(self, labels, beta):
-        """Calculates the Gibbs energy for each element using the penalty factor(s) beta.
+        """Calculates the Gibbs energy for each element using the granular coefficient(s) beta.
 
         Args:
-            labels (:obj:`np.ndarray`):
-            beta (:obj:'float' or `list` of float): if  len(beta) == 1, use isotropic Potts model, else, use
-            anisotropic Potts model
+            labels (:obj:`np.ndarray`): the list of labels assigned to each element
+            beta (:obj:'float' or `list` of float): if  len(beta) == 1, use isotropic Potts model or 1D scenario, else,
+            use anisotropic Potts model.
 
         Returns:
             :obj:`np.ndarray` : Gibbs energy at every element for each label.
