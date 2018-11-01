@@ -1,8 +1,9 @@
-import sys
 import numpy as np
+import sys
+repo_path = '../'
+sys.path.append(repo_path)
 import pyHMRF
 
-sys.path.append("~/PycharmProjects/pyMRF")
 # ******************************************************************************************************************
 """   TEST 1-DIMENSIONAL DATA   """
 # test 1D with 2 feature;   1d_data[Y,F]
