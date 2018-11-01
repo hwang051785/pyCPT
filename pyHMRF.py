@@ -1,8 +1,8 @@
 """
-pyHMRF is a vectorized Python library for unsupervised clustering of data sets with n-dimensional (n>=2) features, designed for
-the segmentation of one-, two- and three-dimensional data in the field of remote sensing, geological modeling and
-geophysics.The library is based on the algorithm developed by Wang et al., 2017 and combines Hidden Markov Random Fields
-with Gaussian Mixture Models in a Bayesian inference framework.
+pyHMRF is a vectorized Python library for unsupervised clustering of data sets with n-dimensional (n>=2) features,
+designed for the segmentation of one-, two- and three-dimensional data in the field of remote sensing, geological
+modeling and geophysics.The library is based on the algorithm developed by Wang et al., 2017 and combines Hidden Markov
+Random Fields with Gaussian Mixture Models in a Bayesian inference framework.
 
 ************************************************************************************************
 References
