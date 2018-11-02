@@ -95,8 +95,8 @@ def model_selection(feat, n_labels, tol=5e-5, reg_covar=1e-3, max_iter=1000, n_i
         plt.xticks(n_components_range)
         plt.ylim([bic.min() * 1.01 - .01 * bic.max(), bic.max()])
         plt.title('BIC score per model')
-        xpos = np.mod(bic.argmin(), len(n_components_range)) + .65 + \
-               .2 * np.floor(bic.argmin() / len(n_components_range))
+        xpos = np.mod(bic.argmin(), len(n_components_range)) + 0.65 + \
+            0.2 * np.floor(bic.argmin() / len(n_components_range))
         plt.text(xpos, bic.min() * 0.97 + .03 * bic.max(), '*', fontsize=14)
         spl.set_xlabel('Number of components')
         spl.legend([b[0] for b in bars], cv_types)

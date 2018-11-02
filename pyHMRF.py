@@ -33,21 +33,21 @@ class Element:
             data (:obj:`np.ndarray`): Multidimensional data array containing all observations (features) in the
                 following format:
 
-                    1D = (Y, F)
-                    2D = (Y, X, F)
-                    3D = (Y, X, Z, F)
-                    Note: Y,X,Z are grid ID
+                    1D scenario: data = [F_1,F_2,...,F_n];
+                    2D scenario: data = [[F_1],[F_2],...,[F_n]];
+                    3D scenario: data = [[[F_1]],[[F_2]],[[F_3]],...,[[F_n]]]
+                    Note: F_i is an vector, [F_i] is a 2-D matrix, [[F_i]] is a 3-D matrix.
 
             coord (:obj:'np.array'): two-dimensional matrix containing the first and last coordinate of each physical
                                      dimension
                 following format:
 
-                    1D = [y_0, y_n]
-                    2D = [[y_0, y_n],
-                          [x_0, x_n]]
-                    3D = [[y_0, y_n],
-                          [x_0, x_n],
-                          [z_0, z_n]]
+                    1D scenario: coord = [y_0, y_n]
+                    2D scenario: coord = [[y_0, y_n],
+                                          [x_0, x_n]]
+                    3D scenario: coord = [[y_0, y_n],
+                                          [x_0, x_n],
+                                          [z_0, z_n]]
                     Note: x,y,z are coordinates
 
             stencil (int): Number specifying the stencil of the neighborhood system used in the Gibbs energy
