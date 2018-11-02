@@ -1,42 +1,9 @@
-# import gdal
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import mixture  # gaussian mixture model
 import itertools
 from scipy import linalg
 from matplotlib import patches
-
-
-# def extract_data(data_path):
-#     # open tif file
-#     src_ds = gdal.Open(data_path)  # src_ds: source data-set
-#
-#     # get data matrix
-#     print("[ RASTER BAND COUNT ]: ", src_ds.RasterCount)
-#
-#     data = np.array([])
-#     for band in range(src_ds.RasterCount):
-#         band += 1
-#         print("[ GETTING BAND ]: ", band)
-#         src_band = src_ds.GetRasterBand(band)
-#         temp = src_band.ReadAsArray()
-#         if not data:
-#             data = temp
-#         else:
-#             data = np.stack((data, temp), axis=2)
-#
-#     # get corner coordinate matrix
-#     src_ds.GetProjectionRef()  # get coordinate info
-#     width = src_ds.RasterXSize
-#     height = src_ds.RasterYSize
-#     gt = src_ds.GetGeoTransform()
-#     min_x = gt[0]
-#     min_y = gt[3] + width * gt[4] + height * gt[5]
-#     max_x = gt[0] + width * gt[1] + height * gt[2]
-#     max_y = gt[3]
-#     coord = np.array([[min_x, max_x], [min_y, max_y]])
-#
-#     return data, coord
 
 
 def model_selection(feat, n_labels, tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100, plot=False):
@@ -129,4 +96,3 @@ def model_selection(feat, n_labels, tol=5e-5, reg_covar=1e-3, max_iter=1000, n_i
         plt.show()
 
     return bic, bic.argmin() + 1
-
