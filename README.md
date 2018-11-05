@@ -83,4 +83,4 @@ Plot the soil layers
 ## References
 
 * Wang, H., Wellmann, J. F., Li, Z., Wang, X., & Liang, R. Y. (2017). A Segmentation Approach for Stochastic Geological Modeling Using Hidden Markov Random Fields. Mathematical Geosciences, 49(2), 145-177.
-    
+* Wang, H., Wang, X., Wellmann, F., & Liang, R. Y. (2018). A Bayesian unsupervised learning approach for identifying soil stratification using cone penetration data. Canadian Geotechnical Journal, (in press).    
