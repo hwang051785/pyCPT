@@ -112,6 +112,8 @@ def read_cpt_data(data_path):
     """    
     :param 
         data_path (str): path to the data file
+        data file should contain 3 columns: [depth, Fr, Qt]
+        data should start from the 1st row!
     :return: 
         
     """
