@@ -33,10 +33,9 @@ class Element:
             data (:obj:`np.ndarray`): Multidimensional data array containing all observations (features) in the
                 following format:
 
-                    1D scenario: data = [F_1,F_2,...,F_n];
-                    2D scenario: data = [[F_1],[F_2],...,[F_n]];
-                    3D scenario: data = [[[F_1]],[[F_2]],[[F_3]],...,[[F_n]]]
-                    Note: F_i is an vector, [F_i] is a 2-D matrix, [[F_i]] is a 3-D matrix.
+                    1D scenario: data = F[coord_idx, feature_idx];
+                    2D scenario: data = F[coord_x_idx, coord_y_idx, feature_idx];
+                    3D scenario: data = F[coord_x_idx, coord_y_idx, coord_z_idx, feature_idx]
 
             coord (:obj:'np.array'): two-dimensional matrix containing the first and last coordinate of each physical
                                      dimension
