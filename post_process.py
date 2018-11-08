@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from matplotlib import gridspec, rcParams  # plot arrangements
 import math
+import scipy.io
 
 plt.style.use('bmh')  # plot style
 
@@ -154,3 +155,14 @@ def plot_feature(element, xlabel='', ylabel='', figsize=(12, 8), scatter=True):
         raise Exception("3D segmentation not yet supported.")
     plt.show()
 
+
+def write_mat(file_name, element):
+    mdict = {
+        'cpt_mu_est': element.mu_est,
+        'cpt_cov_est': element.cov_est.transpose((1, 2, 0)),
+        'cpt_label_map_est': np.asmatrix(element.label_map_est).T,
+        'cpt_label_prob': np.asmatrix(element.label_prob).T,
+        'cpt_label_bin': np.asmatrix(element.labels).T,
+        'cpt_entropy': np.asmatrix(element.info_entr).T
+    }
+    scipy.io.savemat(file_name, mdict)
