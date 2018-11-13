@@ -589,7 +589,7 @@ class Element:
 
     def fit(self, n, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.0005, cov_volume_jump_length=0.00005,
             theta_jump_length=0.0005, t=1., tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100,
-            verbose=False, fix_beta=False, prior_mu=None, prior_mu_std=None, prior_cov=None):
+            verbose=False, fix_beta=False, prior_mu=None, prior_mu_cov=None, prior_cov=None):
         """Fit the segmentation parameters to the given data.
 
         Args:
@@ -608,7 +608,7 @@ class Element:
             verbose (bool or :obj:`str`):
             fix_beta (bool):
             prior_mu (ndarray) : prior information of the center of each cluster, default is empty
-            prior_mu_std (ndarray) : prior information of the std of the center of each cluster, default is empty
+            prior_mu_cov (ndarray) : prior information of the std of the center of each cluster, default is empty
             prior_cov (ndarray) : prior information of the cov of each cluster, default is empty
         """
         # ************************************************************************************************
@@ -672,10 +672,10 @@ class Element:
         # generate distribution means for each label
         prior_mu_means = [self.mus[0][label] for label in range(self.n_labels)]
         # generate distribution covariances for each label
-        if prior_mu_std is None:
+        if prior_mu_cov is None:
             prior_mu_stds = [np.eye(self.n_feat) * 100 for label in range(self.n_labels)]
         else:
-            prior_mu_stds = [np.eye(self.n_feat) * prior_mu_std[label] for label in range(self.n_labels)]
+            prior_mu_stds = [np.eye(self.n_feat) * prior_mu_cov[label] for label in range(self.n_labels)]
         # use the above to generate multivariate normal distributions for each label
         self.priors_mu = [multivariate_normal(prior_mu_means[label], prior_mu_stds[label]) for label in
                           range(self.n_labels)]

@@ -31,19 +31,19 @@ class CPT:
         self.layer_info = np.nan
 
     def segmentation(self, num_of_iter, start_iter, beta_init=1, beta_jump_length=15, n_labels=None, prior_mu=None,
-                     prior_mu_std=None, prior_cov=None):
+                     prior_mu_cov=None, prior_cov=None):
 
         """
         :param
-        num_of_iter (int): the number of iterations
-        start_iter (int): the starting iter_ID of the converged Markov chain
-        beta_init (float): initial value of beta
-        beta_jump_length (float): the jump length of beta during MCMC sampling
-        n_labels (int): predefined number of clusters, default is none, the function will check the model selection
-        results first
-        prior_mu (ndarray): prior information of the center of each cluster, default is empty
-        prior_mu_std (ndarray): prior information of the std of the center of each cluster, default is empty
-        prior_cov (ndarray): prior information of the cov of each cluster, default is empty
+            num_of_iter (int): the number of iterations
+            start_iter (int): the starting iter_ID of the converged Markov chain
+            beta_init (float): initial value of beta
+            beta_jump_length (float): the jump length of beta during MCMC sampling
+            n_labels (int): predefined number of clusters, default is none, the function will check the model selection
+            results first
+            prior_mu (ndarray): prior information of the center of each cluster, default is empty
+            prior_mu_cov (ndarray): prior information of the std of the center of each cluster, default is empty
+            prior_cov (ndarray): prior information of the cov of each cluster, default is empty
 
         :return
 
@@ -57,7 +57,7 @@ class CPT:
                 if n_labels == len(prior_mu):
                     self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
                                      beta_jump_length=beta_jump_length,
-                                     prior_mu=prior_mu, prior_mu_std=prior_mu_std, prior_cov=prior_cov)
+                                     prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_cov=prior_cov)
                 else:
                     raise Exception("'n_labels' does not compatible with 'prior_mu'")
             else:
@@ -67,7 +67,7 @@ class CPT:
             if prior_mu is not None:
                 self.element.fit(n=num_of_iter, n_labels=len(prior_mu), beta_init=beta_init,
                                  beta_jump_length=beta_jump_length,
-                                 prior_mu=prior_mu, prior_mu_std=prior_mu_std, prior_cov=prior_cov)
+                                 prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_cov=prior_cov)
             else:
                 raise Exception("parameter: 'n_labels' or prior information: 'prior_mu', "
                                 "'prior_mu_std', 'prior_cov' need to be specified")
