@@ -608,7 +608,7 @@ class Element:
             verbose (bool or :obj:`str`):
             fix_beta (bool):
             prior_mu (ndarray) : prior information of the center of each cluster, default is empty
-            prior_mu_std (float) : prior information of the std of the center of each cluster, default is empty
+            prior_mu_std (ndarray) : prior information of the std of the center of each cluster, default is empty
             prior_cov (ndarray) : prior information of the cov of each cluster, default is empty
         """
         # ************************************************************************************************
@@ -675,7 +675,7 @@ class Element:
         if prior_mu_std is None:
             prior_mu_stds = [np.eye(self.n_feat) * 100 for label in range(self.n_labels)]
         else:
-            prior_mu_stds = [np.eye(self.n_feat) * prior_mu_std for label in range(self.n_labels)]
+            prior_mu_stds = [np.eye(self.n_feat) * prior_mu_std[label] for label in range(self.n_labels)]
         # use the above to generate multivariate normal distributions for each label
         self.priors_mu = [multivariate_normal(prior_mu_means[label], prior_mu_stds[label]) for label in
                           range(self.n_labels)]

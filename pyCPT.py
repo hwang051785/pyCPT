@@ -39,11 +39,12 @@ class CPT:
         start_iter (int): the starting iter_ID of the converged Markov chain
         beta_init (float): initial value of beta
         beta_jump_length (float): the jump length of beta during MCMC sampling
-        n_labels (int): predefined number of clusters, default is none, the function will check the model selection results
-                first
+        n_labels (int): predefined number of clusters, default is none, the function will check the model selection
+        results first
         prior_mu (ndarray): prior information of the center of each cluster, default is empty
-        prior_mu_std (float): prior information of the std of the center of each cluster, default is empty
+        prior_mu_std (ndarray): prior information of the std of the center of each cluster, default is empty
         prior_cov (ndarray): prior information of the cov of each cluster, default is empty
+
         :return
 
         """
