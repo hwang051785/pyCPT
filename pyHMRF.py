@@ -607,9 +607,9 @@ class Element:
             n_init (int): number of initial trials
             verbose (bool or :obj:`str`):
             fix_beta (bool):
-            prior_mu (list) : prior information of the center of each cluster, default is empty
+            prior_mu (ndarray) : prior information of the center of each cluster, default is empty
             prior_mu_std (float) : prior information of the std of the center of each cluster, default is empty
-            prior_cov (list) : prior information of the cov of each cluster, default is empty
+            prior_cov (ndarray) : prior information of the cov of each cluster, default is empty
         """
         # ************************************************************************************************
         # INIT GAUSSIAN MIXTURE MODEL

@@ -7,17 +7,13 @@ from pre_process import model_selection
 
 
 class CPT:
-    def __init__(self, data_path, thin_layer_criteria=0.25, max_number_of_clusters=10, prior_mu=None, prior_mu_std=None,
-                 prior_cov=None):
+    def __init__(self, data_path, thin_layer_criteria=0.25, do_model_selection=True, max_number_of_clusters=10):
         """
 
         :param
         data_path: path to the dataset
         max_number_of_clusters: maximum possible number of clusters
         do_model_selection (bool): yes or no
-        prior_mu: prior information of the center of each cluster, default is empty
-        prior_mu_std: prior information of the std of the center of each cluster, default is empty
-        prior_cov: prior information of the cov of each cluster, default is empty
         """
 
         # set the thin layer criteria
@@ -25,34 +21,56 @@ class CPT:
         # initial data structure
         self.element = read_cpt_data(data_path)
         print('Number of data points:  ' + str(self.element.phys_shp))
-        self.prior_mu = prior_mu
-        self.prior_mu_std = prior_mu_std
-        self.prior_cov = prior_cov
-        if self.prior_mu is None:
+
+        if do_model_selection:
             # perform model selection
-            self.mod_sel = model_selection(self.element.feat, max_number_of_clusters, plot=True)
+            self.mod_sel = model_selection(feat=self.element.feat, n_labels=max_number_of_clusters, plot=True)
+        else:
+            self.mod_sel = None
         # initialize layer_info with nan
         self.layer_info = np.nan
 
-    def segmentation(self, num_of_iter, start_iter, beta_init=1, beta_jump_length=15):
+    def segmentation(self, num_of_iter, start_iter, beta_init=1, beta_jump_length=15, n_labels=None, prior_mu=None,
+                     prior_mu_std=None, prior_cov=None):
 
         """
         :param
-        :param num_of_iter: the number of iterations
-        :param start_iter: the starting iter_ID of the converged Markov chain
-        :param beta_init: initial value of beta
-        :param beta_jump_length: the jump length of beta during MCMC sampling
+        num_of_iter (int): the number of iterations
+        start_iter (int): the starting iter_ID of the converged Markov chain
+        beta_init (float): initial value of beta
+        beta_jump_length (float): the jump length of beta during MCMC sampling
+        n_labels (int): predefined number of clusters, default is none, the function will check the model selection results
+                first
+        prior_mu (ndarray): prior information of the center of each cluster, default is empty
+        prior_mu_std (float): prior information of the std of the center of each cluster, default is empty
+        prior_cov (ndarray): prior information of the cov of each cluster, default is empty
         :return
 
         """
 
-        if self.prior_mu is None:
+        if self.mod_sel is not None:
             self.element.fit(n=num_of_iter, n_labels=self.mod_sel[1], beta_init=beta_init,
                              beta_jump_length=beta_jump_length)
+        elif n_labels is not None:
+            if prior_mu is not None:
+                if n_labels == len(prior_mu):
+                    self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
+                                     beta_jump_length=beta_jump_length,
+                                     prior_mu=prior_mu, prior_mu_std=prior_mu_std, prior_cov=prior_cov)
+                else:
+                    raise Exception("'n_labels' does not compatible with 'prior_mu'")
+            else:
+                self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
+                                 beta_jump_length=beta_jump_length)
         else:
-            self.element.fit(n=num_of_iter, n_labels=len(self.prior_mu), beta_init=beta_init,
-                             beta_jump_length=beta_jump_length,
-                             prior_mu=self.prior_mu, prior_mu_std=self.prior_mu_std, prior_cov=self.prior_cov)
+            if prior_mu is not None:
+                self.element.fit(n=num_of_iter, n_labels=len(prior_mu), beta_init=beta_init,
+                                 beta_jump_length=beta_jump_length,
+                                 prior_mu=prior_mu, prior_mu_std=prior_mu_std, prior_cov=prior_cov)
+            else:
+                raise Exception("parameter: 'n_labels' or prior information: 'prior_mu', "
+                                "'prior_mu_std', 'prior_cov' need to be specified")
+
         self.element.get_estimator(start_iter=start_iter)
         self.element.get_label_prob(start_iter=start_iter)
         self.element.get_map()
