@@ -7,12 +7,17 @@ from pre_process import model_selection
 
 
 class CPT:
-    def __init__(self, data_path, thin_layer_criteria=0.25, max_number_of_clusters=10, plot_mod_sel=True):
+    def __init__(self, data_path, thin_layer_criteria=0.25, max_number_of_clusters=10, prior_mu=None, prior_mu_std=None,
+                 prior_cov=None):
         """
 
         :param
         data_path: path to the dataset
         max_number_of_clusters: maximum possible number of clusters
+        do_model_selection (bool): yes or no
+        prior_mu: prior information of the center of each cluster, default is empty
+        prior_mu_std: prior information of the std of the center of each cluster, default is empty
+        prior_cov: prior information of the cov of each cluster, default is empty
         """
 
         # set the thin layer criteria
@@ -20,8 +25,12 @@ class CPT:
         # initial data structure
         self.element = read_cpt_data(data_path)
         print('Number of data points:  ' + str(self.element.phys_shp))
-        # perform model selection
-        self.mod_sel = model_selection(self.element.feat, max_number_of_clusters, plot=plot_mod_sel)
+        self.prior_mu = prior_mu
+        self.prior_mu_std = prior_mu_std
+        self.prior_cov = prior_cov
+        if self.prior_mu is None:
+            # perform model selection
+            self.mod_sel = model_selection(self.element.feat, max_number_of_clusters, plot=True)
         # initialize layer_info with nan
         self.layer_info = np.nan
 
@@ -33,11 +42,17 @@ class CPT:
         :param start_iter: the starting iter_ID of the converged Markov chain
         :param beta_init: initial value of beta
         :param beta_jump_length: the jump length of beta during MCMC sampling
-        :return:
+        :return
+
         """
 
-        self.element.fit(n=num_of_iter, n_labels=self.mod_sel[1], beta_init=beta_init,
-                         beta_jump_length=beta_jump_length)
+        if self.prior_mu is None:
+            self.element.fit(n=num_of_iter, n_labels=self.mod_sel[1], beta_init=beta_init,
+                             beta_jump_length=beta_jump_length)
+        else:
+            self.element.fit(n=num_of_iter, n_labels=len(self.prior_mu), beta_init=beta_init,
+                             beta_jump_length=beta_jump_length,
+                             prior_mu=self.prior_mu, prior_mu_std=self.prior_mu_std, prior_cov=self.prior_cov)
         self.element.get_estimator(start_iter=start_iter)
         self.element.get_label_prob(start_iter=start_iter)
         self.element.get_map()

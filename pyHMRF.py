@@ -589,7 +589,7 @@ class Element:
 
     def fit(self, n, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.0005, cov_volume_jump_length=0.00005,
             theta_jump_length=0.0005, t=1., tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100,
-            verbose=False, fix_beta=False):
+            verbose=False, fix_beta=False, prior_mu=None, prior_mu_std=None, prior_cov=None):
         """Fit the segmentation parameters to the given data.
 
         Args:
@@ -607,20 +607,34 @@ class Element:
             n_init (int): number of initial trials
             verbose (bool or :obj:`str`):
             fix_beta (bool):
-
+            prior_mu (list) : prior information of the center of each cluster, default is empty
+            prior_mu_std (float) : prior information of the std of the center of each cluster, default is empty
+            prior_cov (list) : prior information of the cov of each cluster, default is empty
         """
         # ************************************************************************************************
         # INIT GAUSSIAN MIXTURE MODEL
         # store n_labels
         print('Fitting the initial Gaussian mixture model...')
         self.n_labels = n_labels
-        self.gmm = mixture.GaussianMixture(n_components=n_labels,
-                                           covariance_type='full',
-                                           tol=tol,
-                                           reg_covar=reg_covar,
-                                           max_iter=max_iter,
-                                           n_init=n_init)
-        self.gmm.fit(self.feat)
+
+        if prior_mu is None:
+            self.gmm = mixture.GaussianMixture(n_components=n_labels,
+                                               covariance_type='full',
+                                               tol=tol,
+                                               reg_covar=reg_covar,
+                                               max_iter=max_iter,
+                                               n_init=n_init)
+            self.gmm.fit(self.feat)
+        else:
+            self.gmm = mixture.GaussianMixture(n_components=n_labels,
+                                               covariance_type='full',
+                                               tol=tol,
+                                               reg_covar=reg_covar,
+                                               max_iter=max_iter,
+                                               n_init=n_init,
+                                               means_init=prior_mu,
+                                               precisions_init=np.linalg.inv(prior_cov))
+            self.gmm.fit(self.feat)
 
         # do initial prediction based on fit and observations, store as first entry in labels
         # ************************************************************************************************
@@ -658,7 +672,10 @@ class Element:
         # generate distribution means for each label
         prior_mu_means = [self.mus[0][label] for label in range(self.n_labels)]
         # generate distribution covariances for each label
-        prior_mu_stds = [np.eye(self.n_feat) * 100 for label in range(self.n_labels)]
+        if prior_mu_std is None:
+            prior_mu_stds = [np.eye(self.n_feat) * 100 for label in range(self.n_labels)]
+        else:
+            prior_mu_stds = [np.eye(self.n_feat) * prior_mu_std for label in range(self.n_labels)]
         # use the above to generate multivariate normal distributions for each label
         self.priors_mu = [multivariate_normal(prior_mu_means[label], prior_mu_stds[label]) for label in
                           range(self.n_labels)]
