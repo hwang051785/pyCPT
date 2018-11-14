@@ -589,7 +589,7 @@ class Element:
 
     def fit(self, n, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.0005, cov_volume_jump_length=0.00005,
             theta_jump_length=0.0005, t=1., tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100,
-            verbose=False, fix_beta=False, prior_mu=None, prior_mu_cov=None, prior_cov=None):
+            verbose=False, fix_beta=False, prior_mu=None, prior_mu_cov=None, prior_covs=None):
         """Fit the segmentation parameters to the given data.
 
         Args:
@@ -609,7 +609,7 @@ class Element:
             fix_beta (bool):
             prior_mu (ndarray) : prior information of the center of each cluster, default is empty
             prior_mu_cov (ndarray) : prior information of the std of the center of each cluster, default is empty
-            prior_cov (ndarray) : prior information of the cov of each cluster, default is empty
+            prior_covs (ndarray) : prior information of the cov of each cluster, default is empty
         """
         # ************************************************************************************************
         # INIT GAUSSIAN MIXTURE MODEL
@@ -633,7 +633,7 @@ class Element:
                                                max_iter=max_iter,
                                                n_init=n_init,
                                                means_init=prior_mu,
-                                               precisions_init=np.linalg.inv(prior_cov))
+                                               precisions_init=np.linalg.inv(prior_covs))
             self.gmm.fit(self.feat)
 
         # do initial prediction based on fit and observations, store as first entry in labels
@@ -673,11 +673,11 @@ class Element:
         prior_mu_means = [self.mus[0][label] for label in range(self.n_labels)]
         # generate distribution covariances for each label
         if prior_mu_cov is None:
-            prior_mu_stds = [np.eye(self.n_feat) * 100 for label in range(self.n_labels)]
+            prior_mu_covs = [np.eye(self.n_feat) * 100 for label in range(self.n_labels)]
         else:
-            prior_mu_stds = [np.eye(self.n_feat) * prior_mu_cov[label] for label in range(self.n_labels)]
+            prior_mu_covs = [np.eye(self.n_feat) * prior_mu_cov[label] for label in range(self.n_labels)]
         # use the above to generate multivariate normal distributions for each label
-        self.priors_mu = [multivariate_normal(prior_mu_means[label], prior_mu_stds[label]) for label in
+        self.priors_mu = [multivariate_normal(prior_mu_means[label], prior_mu_covs[label]) for label in
                           range(self.n_labels)]
 
         # COV
@@ -690,7 +690,7 @@ class Element:
         # generate nu
         self.nu = self.n_feat + 1
 
-        print('Fitting is done!')
+        print('Initial GMM fitting is done!')
         # ************************************************************************************************
 
         for g in tqdm.trange(n):

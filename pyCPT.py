@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from itertools import groupby
 from pre_process import model_selection
+import scipy.io
 
 
 class CPT:
@@ -57,7 +58,7 @@ class CPT:
                 if n_labels == len(prior_mu):
                     self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
                                      beta_jump_length=beta_jump_length,
-                                     prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_cov=prior_cov)
+                                     prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_covs=prior_cov)
                 else:
                     raise Exception("'n_labels' does not compatible with 'prior_mu'")
             else:
@@ -67,7 +68,7 @@ class CPT:
             if prior_mu is not None:
                 self.element.fit(n=num_of_iter, n_labels=len(prior_mu), beta_init=beta_init,
                                  beta_jump_length=beta_jump_length,
-                                 prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_cov=prior_cov)
+                                 prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_covs=prior_cov)
             else:
                 raise Exception("parameter: 'n_labels' or prior information: 'prior_mu', "
                                 "'prior_mu_std', 'prior_cov' need to be specified")
@@ -335,3 +336,15 @@ def plot_layers(cpt, figsize=(12, 8), aspect=0.1):
 
     plt.grid(False)
     plt.show()
+
+
+def write_mat(file_name, cpt):
+    mdict = {
+        'cpt_mu_est': cpt.element.mu_est,
+        'cpt_cov_est': cpt.element.cov_est.transpose((1, 2, 0)),
+        'cpt_label_map_est': np.asmatrix(cpt.element.label_map_est).T,
+        'cpt_label_prob': np.asmatrix(cpt.element.label_prob).T,
+        'cpt_label_bin': np.asmatrix(cpt.element.labels).T,
+        'cpt_entropy': np.asmatrix(cpt.element.info_entr).T
+    }
+    scipy.io.savemat(file_name, mdict)
