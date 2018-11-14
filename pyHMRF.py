@@ -634,7 +634,12 @@ class Element:
                                                n_init=n_init,
                                                means_init=prior_mu,
                                                precisions_init=np.linalg.inv(prior_covs))
-            self.gmm.fit(self.feat)
+            # self.gmm.fit(self.feat)
+            self.gmm.weights_ = np.ones(n_labels) * 1/n_labels
+            self.gmm.means_ = prior_mu
+            self.gmm.covariances_ = prior_covs
+            self.gmm.precisions_ = np.linalg.inv(prior_covs)
+            self.gmm.precisions_cholesky_ = np.linalg.cholesky(self.gmm.precisions_)
 
         # do initial prediction based on fit and observations, store as first entry in labels
         # ************************************************************************************************
