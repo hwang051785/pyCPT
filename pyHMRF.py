@@ -589,7 +589,7 @@ class Element:
 
     def fit(self, n, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.0005, cov_volume_jump_length=0.00005,
             theta_jump_length=0.0005, t=1., tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100,
-            verbose=False, fix_beta=False, prior_mu=None, prior_mu_cov=None, prior_covs=None):
+            verbose=False, fix_beta=False, prior_mus=None, prior_mu_cov=None, prior_covs=None):
         """Fit the segmentation parameters to the given data.
 
         Args:
@@ -607,7 +607,7 @@ class Element:
             n_init (int): number of initial trials
             verbose (bool or :obj:`str`):
             fix_beta (bool):
-            prior_mu (ndarray) : prior information of the center of each cluster, default is empty
+            prior_mus (ndarray) : prior information of the center of each cluster, default is empty
             prior_mu_cov (ndarray) : prior information of the std of the center of each cluster, default is empty
             prior_covs (ndarray) : prior information of the cov of each cluster, default is empty
         """
@@ -617,7 +617,7 @@ class Element:
         print('Fitting the initial Gaussian mixture model...')
         self.n_labels = n_labels
 
-        if prior_mu is None:
+        if prior_mus is None:
             self.gmm = mixture.GaussianMixture(n_components=n_labels,
                                                covariance_type='full',
                                                tol=tol,
@@ -632,11 +632,11 @@ class Element:
                                                reg_covar=reg_covar,
                                                max_iter=max_iter,
                                                n_init=n_init,
-                                               means_init=prior_mu,
+                                               means_init=prior_mus,
                                                precisions_init=np.linalg.inv(prior_covs))
             # self.gmm.fit(self.feat)
             self.gmm.weights_ = np.ones(n_labels) * 1/n_labels
-            self.gmm.means_ = prior_mu
+            self.gmm.means_ = prior_mus
             self.gmm.covariances_ = prior_covs
             self.gmm.precisions_ = np.linalg.inv(prior_covs)
             self.gmm.precisions_cholesky_ = np.linalg.cholesky(self.gmm.precisions_)

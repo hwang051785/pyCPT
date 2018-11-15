@@ -31,8 +31,9 @@ class CPT:
         # initialize layer_info with nan
         self.layer_info = np.nan
 
-    def segmentation(self, num_of_iter, start_iter, beta_init=1, beta_jump_length=15, n_labels=None, prior_mu=None,
-                     prior_mu_cov=None, prior_cov=None):
+    def segmentation(self, num_of_iter, start_iter, n_labels=None, beta_init=1, beta_jump_length=15,
+                     mu_jump_length=0.0005, cov_volume_jump_length=0.00005, theta_jump_length=0.0005,
+                     prior_mus=None, prior_mu_cov=None, prior_covs=None):
 
         """
         :param
@@ -42,7 +43,10 @@ class CPT:
             beta_jump_length (float): the jump length of beta during MCMC sampling
             n_labels (int): predefined number of clusters, default is none, the function will check the model selection
             results first
-            prior_mu (ndarray): prior information of the center of each cluster, default is empty
+            mu_jump_length (float): Hyperparameter for the mean proposal jump length.
+            cov_volume_jump_length (float): Hyperparameter for the cov proposal jump length.
+            theta_jump_length (float): Hyperparameter for the cov proposal jump length.
+            prior_mus (ndarray): prior information of the center of each cluster, default is empty
             prior_mu_cov (ndarray): prior information of the std of the center of each cluster, default is empty
             prior_cov (ndarray): prior information of the cov of each cluster, default is empty
 
@@ -52,23 +56,35 @@ class CPT:
 
         if self.mod_sel is not None:
             self.element.fit(n=num_of_iter, n_labels=self.mod_sel[1], beta_init=beta_init,
-                             beta_jump_length=beta_jump_length)
+                             beta_jump_length=beta_jump_length,
+                             mu_jump_length=mu_jump_length,
+                             cov_volume_jump_length=cov_volume_jump_length,
+                             theta_jump_length=theta_jump_length)
         elif n_labels is not None:
-            if prior_mu is not None:
-                if n_labels == len(prior_mu):
+            if prior_mus is not None:
+                if n_labels == len(prior_mus):
                     self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
                                      beta_jump_length=beta_jump_length,
-                                     prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_covs=prior_cov)
+                                     mu_jump_length=mu_jump_length,
+                                     cov_volume_jump_length=cov_volume_jump_length,
+                                     theta_jump_length=theta_jump_length,
+                                     prior_mus=prior_mus, prior_mu_cov=prior_mu_cov, prior_covs=prior_covs)
                 else:
                     raise Exception("'n_labels' does not compatible with 'prior_mu'")
             else:
                 self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
-                                 beta_jump_length=beta_jump_length)
-        else:
-            if prior_mu is not None:
-                self.element.fit(n=num_of_iter, n_labels=len(prior_mu), beta_init=beta_init,
                                  beta_jump_length=beta_jump_length,
-                                 prior_mu=prior_mu, prior_mu_cov=prior_mu_cov, prior_covs=prior_cov)
+                                 mu_jump_length=mu_jump_length,
+                                 cov_volume_jump_length=cov_volume_jump_length,
+                                 theta_jump_length=theta_jump_length)
+        else:
+            if prior_mus is not None:
+                self.element.fit(n=num_of_iter, n_labels=len(prior_mus), beta_init=beta_init,
+                                 beta_jump_length=beta_jump_length,
+                                 mu_jump_length=mu_jump_length,
+                                 cov_volume_jump_length=cov_volume_jump_length,
+                                 theta_jump_length=theta_jump_length,
+                                 prior_mus=prior_mus, prior_mu_cov=prior_mu_cov, prior_covs=prior_covs)
             else:
                 raise Exception("parameter: 'n_labels' or prior information: 'prior_mu', "
                                 "'prior_mu_std', 'prior_cov' need to be specified")
