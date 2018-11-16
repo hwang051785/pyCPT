@@ -32,7 +32,8 @@ class CPT:
         self.layer_info = np.nan
 
     def segmentation(self, num_of_iter, start_iter, n_labels=None, beta_init=1, beta_jump_length=15,
-                     mu_jump_length=0.0005, cov_volume_jump_length=0.00005, theta_jump_length=0.0005,
+                     mu_jump_length=0.05, cov_volume_jump_length=0.05, theta_jump_length=0.05,
+                     r_anneal=1, anneal_start=0.1, anneal_end=0.5,
                      prior_mus=None, prior_mu_cov=None, prior_covs=None):
 
         """
@@ -46,6 +47,11 @@ class CPT:
             mu_jump_length (float): Hyperparameter for the mean proposal jump length.
             cov_volume_jump_length (float): Hyperparameter for the cov proposal jump length.
             theta_jump_length (float): Hyperparameter for the cov proposal jump length.
+            r_anneal (float): jump_length_at_the_end_of_annealing/initial_jump_length
+            anneal_start (float): starting point of annealing, from 0 to 1, 0 is the very beginning, 1 is the end of the
+            chain.
+            anneal_end (float): ending point of annealing, from 0 to 1, 0 is the very beginning, 1 is the end of the
+            chain.
             prior_mus (ndarray): prior information of the center of each cluster, default is empty
             prior_mu_cov (ndarray): prior information of the std of the center of each cluster, default is empty
             prior_cov (ndarray): prior information of the cov of each cluster, default is empty
@@ -55,35 +61,39 @@ class CPT:
         """
 
         if self.mod_sel is not None:
-            self.element.fit(n=num_of_iter, n_labels=self.mod_sel[1], beta_init=beta_init,
+            self.element.fit(num_of_iter=num_of_iter, n_labels=self.mod_sel[1], beta_init=beta_init,
                              beta_jump_length=beta_jump_length,
                              mu_jump_length=mu_jump_length,
                              cov_volume_jump_length=cov_volume_jump_length,
-                             theta_jump_length=theta_jump_length)
+                             theta_jump_length=theta_jump_length,
+                             r_anneal=r_anneal, anneal_start=anneal_start, anneal_end=anneal_end)
         elif n_labels is not None:
             if prior_mus is not None:
                 if n_labels == len(prior_mus):
-                    self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
+                    self.element.fit(num_of_iter=num_of_iter, n_labels=n_labels, beta_init=beta_init,
                                      beta_jump_length=beta_jump_length,
                                      mu_jump_length=mu_jump_length,
                                      cov_volume_jump_length=cov_volume_jump_length,
                                      theta_jump_length=theta_jump_length,
+                                     r_anneal=r_anneal, anneal_start=anneal_start, anneal_end=anneal_end,
                                      prior_mus=prior_mus, prior_mu_cov=prior_mu_cov, prior_covs=prior_covs)
                 else:
                     raise Exception("'n_labels' does not compatible with 'prior_mu'")
             else:
-                self.element.fit(n=num_of_iter, n_labels=n_labels, beta_init=beta_init,
-                                 beta_jump_length=beta_jump_length,
-                                 mu_jump_length=mu_jump_length,
-                                 cov_volume_jump_length=cov_volume_jump_length,
-                                 theta_jump_length=theta_jump_length)
-        else:
-            if prior_mus is not None:
-                self.element.fit(n=num_of_iter, n_labels=len(prior_mus), beta_init=beta_init,
+                self.element.fit(num_of_iter=num_of_iter, n_labels=n_labels, beta_init=beta_init,
                                  beta_jump_length=beta_jump_length,
                                  mu_jump_length=mu_jump_length,
                                  cov_volume_jump_length=cov_volume_jump_length,
                                  theta_jump_length=theta_jump_length,
+                                 r_anneal=r_anneal, anneal_start=anneal_start, anneal_end=anneal_end)
+        else:
+            if prior_mus is not None:
+                self.element.fit(num_of_iter=num_of_iter, n_labels=len(prior_mus), beta_init=beta_init,
+                                 beta_jump_length=beta_jump_length,
+                                 mu_jump_length=mu_jump_length,
+                                 cov_volume_jump_length=cov_volume_jump_length,
+                                 theta_jump_length=theta_jump_length,
+                                 r_anneal=r_anneal, anneal_start=anneal_start, anneal_end=anneal_end,
                                  prior_mus=prior_mus, prior_mu_cov=prior_mu_cov, prior_covs=prior_covs)
             else:
                 raise Exception("parameter: 'n_labels' or prior information: 'prior_mu', "

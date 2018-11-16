@@ -17,7 +17,7 @@ my_hmrf = pyHMRF.Element(data, coord_1d)
 print('phys_shp:  ' + str(my_hmrf.phys_shp))
 print('n_feat:  ' + str(my_hmrf.n_feat))
 
-my_hmrf.fit(n=100, n_labels=3, beta_jump_length=0.1)
+my_hmrf.fit(num_of_iter=100, n_labels=3, beta_jump_length=0.1)
 
 # *********************************************************************************************************************
 """  TEST 2-DIMENSIONAL DATA  """
@@ -32,7 +32,7 @@ my_hmrf = pyHMRF.Element(data, coord)
 print('phys_shp:  ' + str(my_hmrf.phys_shp))
 print('n_feat:  ' + str(my_hmrf.n_feat))
 
-my_hmrf.fit(n=100, n_labels=3, beta_jump_length=0.1)
+my_hmrf.fit(num_of_iter=100, n_labels=3, beta_jump_length=0.1)
 
 
 # *********************************************************************************************************
@@ -48,7 +48,7 @@ print('phys_shp:  ' + str(my_hmrf.phys_shp))
 print('n_feat:  ' + str(my_hmrf.n_feat))
 
 # fit the model: 100 iterations and beta_jump = 0.1
-my_hmrf.fit(n=100, n_labels=3, beta_init=[0.5, 0.5, 0.5, 0.5], beta_jump_length= 0.1)
+my_hmrf.fit(num_of_iter=100, n_labels=3, beta_init=[0.5, 0.5, 0.5, 0.5], beta_jump_length= 0.1)
 
 print("beta_list:  ")
 start = 20

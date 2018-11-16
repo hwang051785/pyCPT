@@ -379,7 +379,7 @@ class Element:
         lmd = np.zeros((self.phys_shp.prod(), self.n_labels))
 
         for l in range(self.n_labels):
-            draw = multivariate_normal(mean=mu[l, :], cov=cov[l, :, :]).pdf(self.feat)
+            draw = multivariate_normal(mean=mu[l, :], cov=(cov[l, :, :]+np.eye(self.n_feat) * 1e-4)).pdf(self.feat)
             multi = comp_coef[:, l] * np.array([draw])
             lmd[:, l] = multi
         lmd = np.sum(lmd, axis=1)
@@ -587,19 +587,26 @@ class Element:
 
             # ************************************************************************************************
 
-    def fit(self, n, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.0005, cov_volume_jump_length=0.00005,
-            theta_jump_length=0.0005, t=1., tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100,
-            verbose=False, fix_beta=False, prior_mus=None, prior_mu_cov=None, prior_covs=None):
+    def fit(self, num_of_iter, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.05,
+            cov_volume_jump_length=0.05, theta_jump_length=0.05,
+            r_anneal=1, anneal_start=0.1, anneal_end=0.5,
+            t=1, tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100, verbose=False, fix_beta=False,
+            prior_mus=None, prior_mu_cov=None, prior_covs=None):
         """Fit the segmentation parameters to the given data.
 
         Args:
-            n (int): Number of iterations.
+            num_of_iter (int): Number of iterations.
             n_labels (int): Number of labels representing the number of clusters to be segmented.
             beta_init (float): Initial penalty value for Gibbs energy calculation.
-            beta_jump_length (float): Hyperparameter specifying the beta proposal jump length.
-            mu_jump_length (float): Hyperparameter for the mean proposal jump length.
-            cov_volume_jump_length (float):
-            theta_jump_length (float):
+            beta_jump_length (float): Hyperparameter specifying the beta proposal.
+            mu_jump_length (float): Hyperparameter for the mean proposal.
+            cov_volume_jump_length (float): Hyperparameter for the cov proposal.
+            theta_jump_length (float): Hyperparameter for the cov proposal.
+            r_anneal (float): jump_length_at_the_end_of_annealing/initial_jump_length
+            anneal_start (float): starting point of annealing, from 0 to 1, 0 is the very beginning, 1 is the end of the
+            chain.
+            anneal_end (float): ending point of annealing, from 0 to 1, 0 is the very beginning, 1 is the end of the
+            chain.
             t (float):
             tol (float): tolerance of difference at converge
             reg_covar (float): regularization value of covariance matrix
@@ -698,9 +705,32 @@ class Element:
         print('Initial GMM fitting is done!')
         # ************************************************************************************************
 
-        for g in tqdm.trange(n):
-            self.gibbs_sample(t, beta_jump_length, mu_jump_length, cov_volume_jump_length, theta_jump_length,
-                              verbose, fix_beta)
+        anneal_start_iter = np.around(anneal_start * num_of_iter)
+        anneal_end_iter = np.around(anneal_end * num_of_iter)
+        mu_jump_length_anneal = mu_jump_length
+        cov_volume_jump_length_anneal = cov_volume_jump_length
+        theta_jump_length_anneal = theta_jump_length
+        for g in tqdm.trange(num_of_iter):
+            if g <= anneal_start_iter:
+                pass
+            elif anneal_start_iter < g < anneal_end_iter:
+                mu_jump_length_anneal = mu_jump_length\
+                    - (1 - r_anneal) * mu_jump_length / (anneal_end_iter-anneal_start_iter)\
+                    * (g - anneal_start_iter)
+                cov_volume_jump_length_anneal = cov_volume_jump_length\
+                    - (1 - r_anneal) * cov_volume_jump_length / (anneal_end_iter-anneal_start_iter)\
+                    * (g - anneal_start_iter)
+                theta_jump_length_anneal = theta_jump_length\
+                    - (1 - r_anneal) * theta_jump_length / (anneal_end_iter-anneal_start_iter)\
+                    * (g - anneal_start_iter)
+            else:
+                pass
+
+            self.gibbs_sample(t=t, beta_jump_length=beta_jump_length,
+                              mu_jump_length=mu_jump_length_anneal,
+                              cov_volume_jump_length=cov_volume_jump_length_anneal,
+                              theta_jump_length=theta_jump_length_anneal,
+                              verbose=verbose, fix_beta=fix_beta)
 
     def get_estimator(self, start_iter):
         est = estimator(self.mus, self.covs, self.betas, start_iter)
