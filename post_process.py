@@ -39,7 +39,8 @@ def plot_statistical_pattern(element, res=50, xlabel='Feature_1', ylabel='Featur
     plt.show()
 
 
-def plot_image(element, list_field, title='', xlabel='', ylabel='', figsize=(12, 8), cmap='tab20', colorbar=True, scatter=True):
+def plot_image(element, list_field, title='', xlabel='', ylabel='', figsize=(12, 8),
+               cmap='tab20', colorbar=True, scatter=True):
     """Diagnostic plots for plotting a specific field from the 1-D list structure.
       Args:
           element: an object of Class Element
@@ -115,7 +116,7 @@ def plot_feature(element, xlabel='', ylabel='', figsize=(12, 8), scatter=True):
                     ax = plt.subplot(gs[math.ceil(i / 2) - 1, 0])
                 ax.set_title('Feature_' + str(i))
                 ax.scatter(element.feat[:, i-1], element.coords, s=40,
-                                   c=element.label_map_est)  # rotate x axis to y axis,now y corresponds to depth
+                           c=element.label_map_est)  # rotate x axis to y axis,now y corresponds to depth
                 plt.xlabel(xlabel[i-1])
                 plt.gca().invert_yaxis()  # y is increasing along depth
                 plt.ylabel(ylabel)
@@ -127,7 +128,8 @@ def plot_feature(element, xlabel='', ylabel='', figsize=(12, 8), scatter=True):
                 else:
                     ax = plt.subplot(gs[math.ceil(i / 2) - 1, 0])
                 ax.set_title('Feature_' + str(i))
-                ax.plot(element.feat[:, i-1], element.coords, linewidth=1)  # rotate x axis to y axis,now y corresponds to depth
+                # rotate x axis to y axis,now y corresponds to depth
+                ax.plot(element.feat[:, i-1], element.coords, linewidth=1)
                 plt.xlabel(xlabel[i-1])
                 plt.gca().invert_yaxis()  # y is increasing along depth
                 plt.ylabel(ylabel)

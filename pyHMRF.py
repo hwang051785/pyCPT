@@ -356,8 +356,8 @@ class Element:
 
     def log_prior_density_cov(self, cov, label):
         """Calculates the summed log prior density for the given covariance matrix and labels array."""
-        lam = np.sqrt(np.diag(cov[label, :, :]))
-        r = np.diag(1. / lam) @ cov[label, :, :] @ np.diag(1. / lam)
+        lam = np.sqrt(np.diag(cov[label, :, :] + np.eye(self.n_feat) * 1e-6))
+        r = np.diag(1. / lam) @ (cov[label, :, :] + np.eye(self.n_feat) * 1e-6) @ np.diag(1. / lam)
         logp_r = -0.5 * (self.nu + self.n_feat + 1) * np.log(np.linalg.det(r)) - self.nu / 2. * np.sum(
             np.log(np.diag(np.linalg.inv(r + np.eye(self.n_feat) * 1e-6))))
         logp_lam = np.sum(np.log(multivariate_normal(mean=self.b_sigma[label, :],
@@ -379,7 +379,7 @@ class Element:
         lmd = np.zeros((self.phys_shp.prod(), self.n_labels))
 
         for l in range(self.n_labels):
-            draw = multivariate_normal(mean=mu[l, :], cov=cov[l, :, :] + np.eye(self.n_feat) * 1e-4).pdf(self.feat)
+            draw = multivariate_normal(mean=mu[l, :], cov=cov[l, :, :] + np.eye(self.n_feat) * 1e-6).pdf(self.feat)
             multi = comp_coef[:, l] * np.array([draw])
             lmd[:, l] = multi
         lmd = np.sum(lmd, axis=1)
