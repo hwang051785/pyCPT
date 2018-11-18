@@ -48,10 +48,10 @@ print('phys_shp:  ' + str(my_hmrf.phys_shp))
 print('n_feat:  ' + str(my_hmrf.n_feat))
 
 # fit the model: 100 iterations and beta_jump = 0.1
-my_hmrf.fit(num_of_iter=100, n_labels=3, beta_init=[0.5, 0.5, 0.5, 0.5], beta_jump_length= 0.1)
+my_hmrf.fit(num_of_iter=200, n_labels=3, beta_init=[0.5, 0.5, 0.5, 0.5], beta_jump_length=0.1)
 
 print("beta_list:  ")
-start = 20
+start = 100
 
 print(np.asmatrix(my_hmrf.betas[start:]))
 print("beta_mean: ", np.mean(np.asmatrix(my_hmrf.betas[start:]), axis=0))  # use mean beta as estimate
