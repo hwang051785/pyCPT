@@ -589,7 +589,7 @@ class Element:
 
     def fit(self, num_of_iter, n_labels, beta_init=1, beta_jump_length=0.1, mu_jump_length=0.05,
             cov_volume_jump_length=0.05, theta_jump_length=0.05,
-            r_anneal=1, anneal_start=0.1, anneal_end=0.5,
+            r_anneal=1, anneal_start=0.5, anneal_end=0.75,
             t=1, tol=5e-5, reg_covar=1e-3, max_iter=1000, n_init=100, verbose=False, fix_beta=False,
             prior_mus=None, prior_mu_cov=None, prior_covs=None):
         """Fit the segmentation parameters to the given data.
@@ -621,7 +621,6 @@ class Element:
         # ************************************************************************************************
         # INIT GAUSSIAN MIXTURE MODEL
         # store n_labels
-        print('Fitting the initial Gaussian mixture model...')
         self.n_labels = n_labels
 
         if prior_mus is None:
@@ -631,7 +630,9 @@ class Element:
                                                reg_covar=reg_covar,
                                                max_iter=max_iter,
                                                n_init=n_init)
+            print('Fitting the initial Gaussian mixture model...')
             self.gmm.fit(self.feat)
+            print('Initial GMM fitting is done!')
         else:
             self.gmm = mixture.GaussianMixture(n_components=n_labels,
                                                covariance_type='full',
@@ -703,7 +704,6 @@ class Element:
         # generate nu
         self.nu = self.n_feat + 1
 
-        print('Initial GMM fitting is done!')
         # ************************************************************************************************
         # start gibbs sampler using annealing strategy
         anneal_start_iter = np.around(anneal_start * num_of_iter)

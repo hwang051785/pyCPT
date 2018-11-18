@@ -33,7 +33,7 @@ class CPT:
 
     def segmentation(self, num_of_iter, start_iter, n_labels=None, beta_init=1, beta_jump_length=15,
                      mu_jump_length=0.05, cov_volume_jump_length=0.05, theta_jump_length=0.05,
-                     r_anneal=1, anneal_start=0.1, anneal_end=0.5,
+                     r_anneal=1, anneal_start=0.5, anneal_end=0.75,
                      prior_mus=None, prior_mu_cov=None, prior_covs=None):
 
         """
