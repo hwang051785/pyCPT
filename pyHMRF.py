@@ -893,7 +893,7 @@ def _propose_cov(cov_prev, n_feat, n_labels, cov_jump_length, theta_jump_length)
 
         # check the singularity of the proposed cov_prop
         if np.linalg.det(cov_prop[l, :, :]) < 10 * np.finfo(float).eps:
-            cov_prop[l, :, :] = cov_prop[l, :, :] + np.eye(n_feat) * 1e-6
+            cov_prop[l, :, :] = cov_prop[l, :, :] + np.eye(n_feat) * 1e-4
     return cov_prop
 
 
